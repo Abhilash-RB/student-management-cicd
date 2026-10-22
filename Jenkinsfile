@@ -1,3 +1,6 @@
+environment {
+    PYTHON = 'C:\\Users\\DELL\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe'
+}
 pipeline {
     agent any
     stages {
@@ -7,23 +10,23 @@ pipeline {
             }
         }
         stage('Install Dependencies') {
-            steps {
-                bat '''
-                    python -m venv .venv
-                    .venv\\Scripts\\python.exe -m pip install -r requirements.txt
-                '''
-            }
-        }
+    steps {
+        bat '''
+            "%PYTHON%" -m venv .venv
+            .venv\\Scripts\\python.exe -m pip install -r requirements.txt
+        '''
+    }
+}
         stage('Test') {
-            steps {
-                bat '.venv\\Scripts\\python.exe -m pytest -v'
-            }
-        }
+    steps {
+        bat '.venv\\Scripts\\python.exe -m pytest -v'
+    }
+}
         stage('Run Application') {
-            steps {
-                bat '.venv\\Scripts\\python.exe app.py'
-            }
-        }
+    steps {
+        bat '.venv\\Scripts\\python.exe app.py'
+    }
+}
         stage('Package Release') {
             steps {
                 bat '''
