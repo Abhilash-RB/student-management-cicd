@@ -1,32 +1,37 @@
-environment {
-    PYTHON = 'C:\\Users\\DELL\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe'
-}
+
 pipeline {
     agent any
+
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
+
         stage('Install Dependencies') {
-    steps {
-        bat '''
-            "%PYTHON%" -m venv .venv
-            .venv\\Scripts\\python.exe -m pip install -r requirements.txt
-        '''
-    }
-}
+            steps {
+                bat '''
+                    "C:\\Users\\DELL\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe" -m venv .venv
+                    if errorlevel 1 exit /b 1
+                    .venv\\Scripts\\python.exe -m pip install -r requirements.txt
+                    if errorlevel 1 exit /b 1
+                '''
+            }
+        }
+
         stage('Test') {
-    steps {
-        bat '.venv\\Scripts\\python.exe -m pytest -v'
-    }
-}
+            steps {
+                bat '.venv\\Scripts\\python.exe -m pytest -v'
+            }
+        }
+
         stage('Run Application') {
-    steps {
-        bat '.venv\\Scripts\\python.exe app.py'
-    }
-}
+            steps {
+                bat '.venv\\Scripts\\python.exe app.py'
+            }
+        }
+
         stage('Package Release') {
             steps {
                 bat '''
@@ -38,6 +43,7 @@ pipeline {
             }
         }
     }
+
     post {
         success {
             echo 'SUCCESS: All stages completed.'
